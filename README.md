@@ -1,4 +1,4 @@
-# Exercice 1: station spatiale internationale (ISS)
+# Exercice 1: ISS Space Station (International Space Station Space Station)
 
 Ecrire un programme Python (en mode console) qui exploite les APIs mises à disposition sur
 http://open-notify.org/ pour afficher la position (latitude et longitude) horodatée de la station
