@@ -21,4 +21,4 @@ def get_position():
 
 
 def main():
-    print(get_position().latitude)
+    print("Lat:", get_position().latitude, "Long:", get_position().longitude)
