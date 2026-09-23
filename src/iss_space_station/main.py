@@ -27,6 +27,10 @@ class IssOccupants(BaseModel):
     number: int
     message: str
 
+    @property
+    def iss_people(self) -> list[Person]:
+        return [person for person in self.people if person.craft == "ISS"]
+
 
 def get_people() -> IssOccupants:
     response = requests.get("http://api.open-notify.org/astros.json")
@@ -50,5 +54,5 @@ def main():
         "Nombre de gens en train de voyager a plus de 2millions de km/h: ",
         occupants.number,
     )
-    for fakeperson in occupants.people:
+    for fakeperson in occupants.iss_people:
         print(f"Nom : {fakeperson.name}")
