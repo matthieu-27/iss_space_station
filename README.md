@@ -9,6 +9,11 @@ spatiale internationale, le nombre de ses occupants et leur nom.
 Clone this repository
 
 ```sh
-uv sync
+pip install -r requirements.txt
+python main.py
+```
+
+```sh
+uv sync --dev
 uv run iss-space-station
 ```

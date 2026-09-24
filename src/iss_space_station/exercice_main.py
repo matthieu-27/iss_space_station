@@ -1,13 +1,14 @@
-import requests
-from pydantic import BaseModel, Field, computed_field, field_validator
+from typing import *
 
-ISS_URL = "http://api.open-notify.org/iss-now.json"
-ASTROS_URL = "http://api.open-notify.org/astros.json"
+import requests
+from pydantic import BaseModel
+
+API_URL = "http://api.open-notify.org/iss-now.json"
 
 
 class IssPosition(BaseModel):
-    latitude: float = Field(ge=-90, le=90)
-    longitude: float = Field(ge=-180, le=180)
+    latitude: float
+    longitude: float
 
 
 class IssResponse(BaseModel):
@@ -20,10 +21,6 @@ class Person(BaseModel):
     craft: str
     name: str
 
-    @field_validator("craft")
-    def normalize(cls, v: str) -> str:
-        return v.strip().upper()
-
 
 class IssOccupants(BaseModel):
     people: list[Person]
@@ -34,31 +31,28 @@ class IssOccupants(BaseModel):
     def iss_people(self) -> list[Person]:
         return [person for person in self.people if person.craft == "ISS"]
 
-    @computed_field
-    def iss_number(self) -> int:
-        return len(self.iss_people)
-
 
 def get_people() -> IssOccupants:
-    response = requests.get(ASTROS_URL)
+    response = requests.get("http://api.open-notify.org/astros.json")
     response.raise_for_status()
     return IssOccupants.model_validate(response.json())
 
 
 def get_position():
-    response = requests.get(ISS_URL)
+    response = requests.get(API_URL)
     response = IssResponse.model_validate(response.json()).iss_position
     return response
 
 
 def main():
     position = get_position()
+    occupants = get_people()
+
     print("POSITION DE L'ISS SPACE STATION")
     print(f"Latitude: {position.latitude} Longitude: {position.longitude}")
-    occupants = get_people()
-    # print(occupants.model_dump()) #model dump (debug)
-
-    print(f"Nombre: {occupants.number}")
-    print(f"Nombre réel: {len(occupants.iss_people)}")
+    print(
+        "Nombre de gens en train de voyager a plus de 2millions de km/h: ",
+        occupants.number,
+    )
     for person in occupants.iss_people:
         print(f"Nom : {person.name}")
